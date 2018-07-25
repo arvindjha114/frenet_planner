@@ -2,14 +2,6 @@
 
 Frenet optimal trajectory generator
 
-author: Atsushi Sakai (@Atsushi_twi)
-
-Ref:
-
-- [Optimal Trajectory Generation for Dynamic Street Scenarios in a Frenet Frame](https://www.researchgate.net/profile/Moritz_Werling/publication/224156269_Optimal_Trajectory_Generation_for_Dynamic_Street_Scenarios_in_a_Frenet_Frame/links/54f749df0cf210398e9277af.pdf)
-
-- [Optimal trajectory generation for dynamic street scenarios in a Frenet Frame](https://www.youtube.com/watch?v=Cj6tAQe7UCY)
-
 """
 
 import numpy as np
@@ -307,6 +299,12 @@ def generate_target_course(x, y):
 
 
 def main():
+    ''' TODO
+    Experiment on stage simulator
+    1. Create a ROS Node
+    2. Subscribe to costmap, odometry, 
+    3. Set up publisher to publish path, cmd_vel
+    '''
     print(__file__ + " start!!")
 
     # way points
