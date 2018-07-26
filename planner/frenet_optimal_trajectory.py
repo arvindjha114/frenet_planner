@@ -9,7 +9,9 @@ import matplotlib.pyplot as plt
 import copy
 import math
 import cubic_spline_planner
-
+import rospy
+from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import Twist
 # Parameter
 MAX_SPEED = 50.0 / 3.6  # maximum speed [m/s]
 MAX_ACCEL = 2.0  # maximum acceleration [m/ss]
@@ -138,10 +140,12 @@ class Frenet_path:
 
     def __init__(self):
         self.t = []
+        # Lateral motion params
         self.d = []
         self.d_d = []
         self.d_dd = []
         self.d_ddd = []
+        # Longitudinal Motion params
         self.s = []
         self.s_d = []
         self.s_dd = []
@@ -170,6 +174,7 @@ def calc_frenet_paths(c_speed, c_d, c_d_d, c_d_dd, s0):
 	    # quntic_polynomial(start pos, start vel, start accn, end pos, end vel, end accn, time_end)
             lat_qp = quintic_polynomial(c_d, c_d_d, c_d_dd, di, 0.0, 0.0, Ti)
 
+
             fp.t = [t for t in np.arange(0.0, Ti, DT)]
             fp.d = [lat_qp.calc_point(t) for t in fp.t]
             fp.d_d = [lat_qp.calc_first_derivative(t) for t in fp.t]
@@ -179,6 +184,7 @@ def calc_frenet_paths(c_speed, c_d, c_d_d, c_d_dd, s0):
             # Loongitudinal motion planning (Velocity keeping)
             for tv in np.arange(TARGET_SPEED - D_T_S * N_S_SAMPLE, TARGET_SPEED + D_T_S * N_S_SAMPLE, D_T_S):
                 tfp = copy.deepcopy(fp)
+                # quartic_polynomial (current_course position, current speed, current acceleration, target velocity, target accn, predicted time)
                 lon_qp = quartic_polynomial(s0, c_speed, 0.0, tv, 0.0, Ti)
 
                 tfp.s = [lon_qp.calc_point(t) for t in fp.t]
@@ -297,14 +303,20 @@ def generate_target_course(x, y):
 
     return rx, ry, ryaw, rk, csp
 
+def goalcallback(data):
+    pass
 
 def main():
     ''' TODO
     Experiment on stage simulator
     1. Create a ROS Node
-    2. Subscribe to costmap, odometry, 
+    2. Subscribe to costmap(not priority), odometry, final goal(can hardcode for now)  
     3. Set up publisher to publish path, cmd_vel
     '''
+    rospy.init_node('frenet_planner')
+    rate=rospy.Rate(10)
+    vel_pub=rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    rospy.Subscriber("/move_base_simple/goal", PoseStamped, goalcallback)
     print(__file__ + " start!!")
 
     # way points
@@ -331,7 +343,7 @@ def main():
     for i in range(500):
         path = frenet_optimal_planning(
             csp, s0, c_speed, c_d, c_d_d, c_d_dd, ob)
-
+        # assume the bot has reached the next position
         s0 = path.s[1]
         c_d = path.d[1]
         c_d_d = path.d_d[1]

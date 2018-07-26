@@ -21,7 +21,7 @@ class Spline:
         self.y = y
 
         self.nx = len(x)  # dimension of x
-        h = np.diff(x)
+        h = np.diff(x)    # first order different
 
         # calc coefficient c
         self.a = [iy for iy in y]
