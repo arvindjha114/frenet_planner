@@ -25,7 +25,7 @@
   		<rosparam file="$(find teb_local_planner_tutorials)/cfg/carlike/global_costmap_params.yaml" command="load" />
   		<rosparam file="$(find teb_local_planner_tutorials)/cfg/carlike/teb_local_planner_params.yaml" command="load" />
 
-		<param name="base_global_planner" value="global_planner/GlobalPlanner" />
+		<param name="base_global_planner" value="navfn/NavfnROS" />
 		<param name="planner_frequency" value="1.0" />
 		<param name="planner_patience" value="5.0" />
 

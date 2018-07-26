@@ -3,8 +3,20 @@ Optimal Trajectory Generation
 
 
 # Installation
-* Clone in ros_workspace/src/
+```shell
+cd "your_workspace"/src
+git clone https://github.com/AGV-IIT-KGP/frenet_planner.git
+cd ..
+rosdep install --from-paths src --ignore-src -r -y
+sudo apt-get install ros-kinetic-teb-local-planner-tutorials #if required
+catkin_make
+source devel/setup.bash
+```
 
+# Running
+```terminal
+foo@bar$ roslaunch robot_carlike_in_stage.launch
+```
 
 ## Things to do
 
